@@ -12,6 +12,7 @@ sub error {
     print "-a [entry]        add [entry] as a todo item\n";
     print "-t [number]       toggle an item's todo/done status\n";
     print "-r                remove all completed tasks from the list\n";
+    print "-r [number]       remove a specific task from the list\n";
     exit;
 }
 sub addEntry {
@@ -70,6 +71,18 @@ sub removeItems {
     exit;
 }
 
+sub removeItem {
+    my ($num) = @_; my @items = ('');
+    open(TODO, './.ptd'); my @lines = <TODO>; close TODO;
+    for my $_ (@lines) { if (/^todo:/) { push @items, $_; } }
+    for my $_ (@lines) { if (/^done:/) { push @items, $_; } }
+
+    open(TODO, '>./.ptd');
+    for my $_ (@lines) { unless (/$items[$num]/) { print TODO; } } close TODO;
+
+    print "removed $items[$num]";
+}
+       
 my $args = $#ARGV;
 $_ = $ARGV[0];
 
@@ -82,4 +95,5 @@ if ($args == 0) {
 if ($args == 1) {
     if (/-a/) { addEntry($ARGV[1]); }
     if (/-t/) { toggleItem($ARGV[1]); }
+    if (/-r/) { removeItem($ARGV[1]); }
 }
