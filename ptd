@@ -15,6 +15,7 @@ sub error {
     print "-r [number]       remove a specific task from the list\n";
     exit;
 }
+
 sub addEntry {
     my ($entry) = @_;
     open(TODO, '>>./.ptd');
