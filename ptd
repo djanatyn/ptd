@@ -10,14 +10,14 @@ sub error {
     print "actions:\n";
     print "-l                list all entries\n";
     print "-a [entry]        add [entry] as a todo item\n";
-    print "-t [number]       toggle an item's todo/done status\n";
+    print "-d [number]       toggle an item's todo/done status\n";
     print "-r                remove all completed tasks from the list\n";
     exit;
 }
 sub addEntry {
     my ($entry) = @_;
     open(TODO, '>>./.ptd');
-    print TODO "todo $entry \n";
+    print TODO "todo: $entry \n";
     print "added '$entry' to todo list.\n";
     exit;
 }
@@ -27,18 +27,43 @@ sub countItems {
     open(TODO, './.ptd') or die 'please create a .ptd file';
     @_ = ();
     for $_ (<TODO>) { push @_, $1 if /^$target:(.*)$/; }
+    close TODO;
 
     return @_;
 }
 
 sub printTodo {
     my @todo = countItems('todo'); my @done = countItems('done');
-    my $t = 1; my $d = 1;
+    my $x = 1;
     print "todo:\n";
-    for my $todo (@todo) { print "$t:$todo\n"; $t++; }
+    for my $todo (@todo) { print "$x:$todo\n"; $x++; }
     print "done:\n";
-    for my $done (@done) { print "$d:$done\n"; $d++; }
+    for my $done (@done) { print "$x:$done\n"; $x++; }
     exit;
+}
+
+sub toggleItem {
+    my ($num) = @_; my $x = 1; my @items;
+    open(TODO, './.ptd'); my @lines = <TODO>; close TODO;
+    for my $_ (@lines) {
+	if (/^todo:/) {
+	    $items[$x] = $_;
+	    $x++;
+	}
+    }
+    for my $_ (@lines) {
+	if (/^done:/) {
+	    $items[$x] = $_;
+	    $x++;
+	}
+    }
+    open(TODO, '>./.ptd');
+    for $_ (@lines) {
+	if (/$items[$num]/) { s/(todo|done)/$1 eq 'todo' ? 'done' : 'todo'/e; }
+	print TODO;
+    }
+    close TODO;
+    print "toggled status of $items[$num]";
 }
 
 my $args = $#ARGV;
@@ -51,5 +76,5 @@ if ($args == 0) {
 }
 if ($args == 1) {
     if (/-a/) { addEntry($ARGV[1]); }
-#    if (/-d/) { markDone($ARGV[1]); }
+    if (/-t/) { toggleItem($ARGV[1]); }
 }    
