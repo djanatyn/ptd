@@ -10,7 +10,7 @@ sub error {
     print "actions:\n";
     print "-l                list all entries\n";
     print "-a [entry]        add [entry] as a todo item\n";
-    print "-d [number]       toggle an item's todo/done status\n";
+    print "-t [number]       toggle an item's todo/done status\n";
     print "-r                remove all completed tasks from the list\n";
     exit;
 }
@@ -23,7 +23,7 @@ sub addEntry {
 }
 
 sub countItems {
-    (my $target) = @_;
+    my ($target) = @_;
     open(TODO, './.ptd') or die 'please create a .ptd file';
     @_ = ();
     for $_ (<TODO>) { push @_, $1 if /^$target:(.*)$/; }
@@ -55,6 +55,19 @@ sub toggleItem {
     }
     close TODO;
     print "toggled status of $items[$num]";
+    exit;
+}
+
+sub removeItems {
+    open(TODO, './.ptd'); my @lines = <TODO>; close TODO;
+    my @newlines; my $removed = 0;
+    for my $_ (@lines) {
+	unless (/^done/) {push @newlines, $_; };
+	if (/^done/) { $removed++; };
+    }
+    open(TODO, '>./.ptd'); for $_ (@newlines) { print TODO; }; close TODO;
+    print "removed $removed completed items\n";
+    exit;
 }
 
 my $args = $#ARGV;
@@ -63,9 +76,10 @@ $_ = $ARGV[0];
 if ($args == -1) { error("please specify at least one arguement\n\n"); }
 if ($args == 0) {
     if (/-l/) { printTodo; }
+    if (/-r/) { removeItems; }
     else { error("i don't understand what you're saying\n\n"); }
 }
 if ($args == 1) {
     if (/-a/) { addEntry($ARGV[1]); }
     if (/-t/) { toggleItem($ARGV[1]); }
-}    
+}
