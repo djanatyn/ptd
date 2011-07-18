@@ -43,20 +43,11 @@ sub printTodo {
 }
 
 sub toggleItem {
-    my ($num) = @_; my $x = 1; my @items;
+    my ($num) = @_; my @items = ('');
     open(TODO, './.ptd'); my @lines = <TODO>; close TODO;
-    for my $_ (@lines) {
-	if (/^todo:/) {
-	    $items[$x] = $_;
-	    $x++;
-	}
-    }
-    for my $_ (@lines) {
-	if (/^done:/) {
-	    $items[$x] = $_;
-	    $x++;
-	}
-    }
+    for my $_ (@lines) { if (/^todo:/) { push @items, $_; } }
+    for my $_ (@lines) { if (/^done:/) { push @items, $_; } }
+
     open(TODO, '>./.ptd');
     for $_ (@lines) {
 	if (/$items[$num]/) { s/(todo|done)/$1 eq 'todo' ? 'done' : 'todo'/e; }
