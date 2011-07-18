@@ -21,27 +21,23 @@ sub addEntry {
     print "added '$entry' to todo list.\n";
     exit;
 }
-sub printTodo {
+
+sub countItems {
+    (my $target) = @_;
     open(TODO, "./.ptd") or die "please create a .ptd file";
-    my @todo; my @done;
-    my $t = 0; my $d = 0;
-    for $_ (<TODO>) {
-	if (/^todo:/) {
-	    s/^todo://;
-	    $todo[$t] = $_;
-	    $t++;
-	}
-	if (/^done:/) {
-	    s/^done://;
-	    $done[$d] = $_;
-	    $d++;
-	}
-    }
-    $t = 1; $d = 1;
+    @_ = ();
+    for $_ (<TODO>) { push @_, $1 if /^$target:(.*)$/; }
+
+    return @_;
+}
+
+sub printTodo {
+    my @todo = countItems("todo"); my @done = countItems("done");
+    my $t = 1; my $d = 1;
     print "todo:\n";
-    for my $todo (@todo) { print "$t:$todo"; $t++; }
+    for my $todo (@todo) { print "$t:$todo\n"; $t++; }
     print "done:\n";
-    for my $done (@done) { print "$d:$done"; $d++; }
+    for my $done (@done) { print "$d:$done\n"; $d++; }
     exit;
 }
 
