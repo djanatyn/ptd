@@ -1,0 +1,44 @@
+#!/usr/bin/perl -w
+use strict;
+
+sub error {
+    my ($error) = @_;
+    print $error;
+    print "ptd - a todo list utility.\n";
+    print "usage:\n";
+    print " ptd <action> [options]\n";
+    print "actions:\n";
+    print "-l                list all entries\n";
+    print "-a [entry]        add [entry] as a todo item\n";
+    print "-d [number]       mark an item as done\n";
+    print "-u [number]       mark an item as not done\n";
+    print "-r                remove all completed tasks from the list\n";
+    exit;
+}
+sub addEntry {
+    my ($entry) = @_;
+    open(TODO, ">>./.ptd");
+    print TODO "todo $entry \n";
+    print "added '$entry' to todo list.\n";
+    exit;
+}
+sub printTodo {
+    open(TODO, "./.ptd") or die "please create a .ptd file";
+    while(my $line = <TODO>) {
+	print $line;
+    }
+    exit;
+}
+
+$_ = $#ARGV;
+
+if (/-1/) { error("please specify at least one arguement\n\n"); }
+if (/0/) {
+    $_ = $ARGV[0];
+    if (/-l/) { printTodo; }
+    else { error("i don't understand what you're saying\n\n"); }
+}
+if (/1/) {
+    $_ = $ARGV[0];
+    if (/-a/) { addEntry($ARGV[1]); }
+}    
