@@ -16,7 +16,7 @@ sub error {
 }
 sub addEntry {
     my ($entry) = @_;
-    open(TODO, ">>./.ptd");
+    open(TODO, '>>./.ptd');
     print TODO "todo $entry \n";
     print "added '$entry' to todo list.\n";
     exit;
@@ -24,7 +24,7 @@ sub addEntry {
 
 sub countItems {
     (my $target) = @_;
-    open(TODO, "./.ptd") or die "please create a .ptd file";
+    open(TODO, './.ptd') or die 'please create a .ptd file';
     @_ = ();
     for $_ (<TODO>) { push @_, $1 if /^$target:(.*)$/; }
 
@@ -32,7 +32,7 @@ sub countItems {
 }
 
 sub printTodo {
-    my @todo = countItems("todo"); my @done = countItems("done");
+    my @todo = countItems('todo'); my @done = countItems('done');
     my $t = 1; my $d = 1;
     print "todo:\n";
     for my $todo (@todo) { print "$t:$todo\n"; $t++; }
