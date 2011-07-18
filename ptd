@@ -10,8 +10,7 @@ sub error {
     print "actions:\n";
     print "-l                list all entries\n";
     print "-a [entry]        add [entry] as a todo item\n";
-    print "-d [number]       mark an item as done\n";
-    print "-u [number]       mark an item as not done\n";
+    print "-t [number]       toggle an item's todo/done status\n";
     print "-r                remove all completed tasks from the list\n";
     exit;
 }
@@ -24,9 +23,25 @@ sub addEntry {
 }
 sub printTodo {
     open(TODO, "./.ptd") or die "please create a .ptd file";
-    while(my $line = <TODO>) {
-	print $line;
+    my @todo; my @done;
+    my $t = 0; my $d = 0;
+    for $_ (<TODO>) {
+	if (/^todo:/) {
+	    s/^todo://;
+	    $todo[$t] = $_;
+	    $t++;
+	}
+	if (/^done:/) {
+	    s/^done://;
+	    $done[$d] = $_;
+	    $d++;
+	}
     }
+    $t = 1; $d = 1;
+    print "todo:\n";
+    for my $todo (@todo) { print "$t:$todo"; $t++; }
+    print "done:\n";
+    for my $done (@done) { print "$d:$done"; $d++; }
     exit;
 }
 
@@ -40,4 +55,5 @@ if ($args == 0) {
 }
 if ($args == 1) {
     if (/-a/) { addEntry($ARGV[1]); }
+#    if (/-d/) { markDone($ARGV[1]); }
 }    

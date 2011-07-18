@@ -1,2 +1,12 @@
 perl todo list
 ==============
+todo: add removing items
+done: add numerical identification for todo items
+todo: add toggling todo/done status
+todo: add removing all done items
+done: use substition to remove identifiers
+todo: learn perl
+done: play with perl
+todo: eat dinner
+todo: upload code to github
+done: stay up way too late working on a stupid project
