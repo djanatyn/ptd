@@ -30,15 +30,14 @@ sub printTodo {
     exit;
 }
 
-$_ = $#ARGV;
+my $args = $#ARGV;
+$_ = $ARGV[0];
 
-if (/-1/) { error("please specify at least one arguement\n\n"); }
-if (/0/) {
-    $_ = $ARGV[0];
+if ($args == -1) { error("please specify at least one arguement\n\n"); }
+if ($args == 0) {
     if (/-l/) { printTodo; }
     else { error("i don't understand what you're saying\n\n"); }
 }
-if (/1/) {
-    $_ = $ARGV[0];
+if ($args == 1) {
     if (/-a/) { addEntry($ARGV[1]); }
 }    
